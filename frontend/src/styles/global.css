@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  --mmx-bg-base: #090d16;
+  --mmx-bg-surface: #111827;
+  --mmx-bg-elevated: rgba(30, 41, 59, 0.75);
+  --mmx-border: rgba(255, 255, 255, 0.08);
+  --mmx-border-glow: rgba(16, 185, 129, 0.35);
+  --mmx-primary: #10b981;
+  --mmx-primary-hover: #059669;
+  --mmx-accent: #6366f1;
+  --mmx-warning: #f59e0b;
+  --mmx-danger: #ef4444;
+  --mmx-text-main: #f8fafc;
+  --mmx-text-muted: #94a3b8;
+  --mmx-font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --mmx-font-mono: 'JetBrains Mono', monospace;
+  --mmx-radius-lg: 16px;
+  --mmx-radius-md: 10px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--mmx-bg-base);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
+  color: var(--mmx-text-main);
+  font-family: var(--mmx-font-sans);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bento Card Architecture */
+.mmx-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.25rem;
+  padding: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.mmx-card {
+  background: var(--mmx-bg-elevated);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--mmx-border);
+  border-radius: var(--mmx-radius-lg);
+  padding: 1.5rem;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mmx-card:hover {
+  border-color: var(--mmx-border-glow);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Buttons & Badges */
+.mmx-btn-primary {
+  background: linear-gradient(135deg, var(--mmx-primary), var(--mmx-primary-hover));
+  color: #022c22;
+  font-weight: 700;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--mmx-radius-md);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.mmx-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.mmx-mono-badge {
+  font-family: var(--mmx-font-mono);
+  font-size: 0.78rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--mmx-primary);
+  border: 1px solid var(--mmx-border-glow);
+}
