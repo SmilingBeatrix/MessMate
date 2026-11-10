@@ -7,18 +7,22 @@ import rateLimit from "express-rate-limit";
 import { allowedOrigins, isProduction, env } from "../config/env.js";
 import { ApiError } from "../utils/ApiError.js";
 
+// --- HARDCODED PRODUCTION URL TO BYPASS ENV ISSUES ---
+const PRODUCTION_URL = "https://messmate-r38e.onrender.com";
+
 // CORS options - applied per-route in app.js so static assets aren't affected
 export const corsOptions = {
   origin: isProduction
     ? (origin, callback) => {
-        // No Origin header = same-origin request or server-to-server. Allow.
         if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin)) return callback(null, true);
-        // In production allow same-origin (the app URL hits its own API)
+        
+        // Allow if it's the hardcoded URL OR in the allowedOrigins list
+        if (origin === PRODUCTION_URL || allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
         return callback(new ApiError(403, "Origin not allowed by CORS"));
       }
     : (origin, callback) => {
-        // In development, allow ALL origins so testing on any local port works
         return callback(null, true);
       },
   credentials: true,
@@ -28,9 +32,6 @@ export const corsOptions = {
   maxAge: 86400
 };
 
-// NOTE: cors() is deliberately NOT applied here. It is applied only to
-// /api/v1 in app.js. Static files (HTML, CSS, JS, images) should never
-// be blocked by CORS - they're same-origin by nature.
 export function applySecurity(app) {
   app.set("trust proxy", 1);
   app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
@@ -59,7 +60,6 @@ export const authLimiter = rateLimit({
 
 // CSRF guard for state-changing requests (POST/PUT/PATCH/DELETE)
 export function originCheck(req, res, next) {
-  // Skip entirely in development
   if (!isProduction) return next();
 
   const method = req.method.toUpperCase();
@@ -76,8 +76,10 @@ export function originCheck(req, res, next) {
     return next(new ApiError(403, "Missing origin for state-changing request"));
   }
 
-  // Allow if origin is in the allowed list
-  if (allowedOrigins.includes(checkOrigin)) return next();
+  // Explicitly allow the Render URL
+  if (checkOrigin === PRODUCTION_URL || allowedOrigins.includes(checkOrigin)) {
+    return next();
+  }
 
   // Allow same-origin requests (page calling its own API)
   const host = req.get("host");
